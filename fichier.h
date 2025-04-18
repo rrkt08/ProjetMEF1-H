@@ -31,4 +31,3 @@ void distribution_carte(){
 void creation_pioche_centrale(){
 }
 */
-

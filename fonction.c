@@ -1,72 +1,110 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include "fichier.h"
 
-int card_user(){
+int card_user() {
     int a;
-    printf("Nombre de cartes par joueur ? (entre 3 et 10)\n");
-    scanf("%d",&a);
-    while((a>10)||(a<3)){
-        printf("Erreur !\n");
-        printf("Nombre de cartes par joueur ? (ENTRE 3 ET 10)\n");
-        scanf("%d",&a);
+    printf("\033[1;36m╔═══════════════════════════════════════╗\033[0m\n");
+    printf("\033[1;36m║ 🃏  Choix du nombre de cartes/joueur  ║\033[0m\n");
+    printf("\033[1;36m╚═══════════════════════════════════════╝\033[0m\n\n");
+
+    printf("➡️  Combien de cartes ? (entre \033[1;33m3\033[0m et \033[1;33m10\033[0m)\n> ");
+    scanf("%d", &a);
+    while ((a > 10) || (a < 3)) {
+        printf("\033[1;31mErreur !\033[0m Nombre de cartes entre 3 et 10\n> ");
+        scanf("%d", &a);
     }
-    system("clear || cls"); // nettoie le terminal
+
+    system("clear || cls");
     return a;
 }
 
-int nbr_user(){
+int nbr_user() {
     int a;
-    printf("===Début du jeu===\n\n");
-    printf("Nombre de joueurs ? (entre 2 et 4)\n");
-    scanf("%d",&a);
-    while((a>4)||(a<2)){
-        printf("Erreur !\n");
-        printf("Nombre de joueurs ? (ENTRE 2 ET 4)\n");
-        scanf("%d",&a);
+    printf("\033[1;36m╔═══════════════════════════════════╗\033[0m\n");
+    printf("\033[1;36m║ 👥  Nombre de joueurs à définir  ║\033[0m\n");
+    printf("\033[1;36m╚═══════════════════════════════════╝\033[0m\n\n");
+
+    printf("➡️  Combien de joueurs ? (entre \033[1;33m2\033[0m et \033[1;33m4\033[0m)\n> ");
+    scanf("%d", &a);
+    while ((a > 4) || (a < 2)) {
+        printf("\033[1;31mErreur !\033[0m Nombre de joueurs entre 2 et 4\n> ");
+        scanf("%d", &a);
     }
-    system("clear || cls"); // nettoie le terminal
+
+    system("clear || cls");
     return a;
 }
 
-void crea_joueurs(Joueur *j, int n){
-    for(int i = 1; i <= n; i++){
-        // faire la distribution de carte pour avoir la main de chaque joueur...
-        printf("Nom du joueur %d ?\n",i);
-        scanf("%s",j->nom);
+void crea_joueurs(Joueur *j, int n) {
+    system("clear || cls");
+
+    printf("\033[1;36m╔══════════════════════════════════════╗\033[0m\n");
+    printf("\033[1;36m║      🎮  CRÉATION DES JOUEURS        ║\033[0m\n");
+    printf("\033[1;36m╚══════════════════════════════════════╝\033[0m\n\n");
+
+    for (int i = 0; i < n; i++) {
+        printf("\033[1;33m🧑  Nom du joueur %d : \033[0m", i + 1);
+        scanf("%s", j[i].nom);
+        printf("\033[1;32m✔️  Bienvenue, %s !\n\n\033[0m", j[i].nom);
     }
+
+    printf("\033[1;36m╔══════════════════════════════════════╗\033[0m\n");
+    printf("\033[1;36m║     ✅ Tous les joueurs sont prêts ! ║\033[0m\n");
+    printf("\033[1;36m╚══════════════════════════════════════╝\033[0m\n");
+
+    printf("\n\033[1;34mAppuyez sur [Entrée] pour continuer...\033[0m");
+    while (getchar() != '\n'); // nettoie le buffer
+    getchar(); // attend Entrée
 }
 
-//a completer
 void charger() {
-    printf("\n=== CHARGEMENT ===\n");
-    printf("(Le jeu a chargé...)\n"); 
-    while (getchar() != '\n'); // Attendre Entrée
+    system("clear || cls");
+    printf("\033[1;34m╔══════════════════════════════╗\033[0m\n");
+    printf("\033[1;34m║ 📂  Chargement d'une partie  ║\033[0m\n");
+    printf("\033[1;34m╚══════════════════════════════╝\033[0m\n\n");
+
+    printf("\033[1;33mLe jeu est chargé ! (placeholder)\033[0m\n");
+    printf("\033[1;34mAppuyez sur Entrée pour revenir...\033[0m");
+    while (getchar() != '\n'); // vider le buffer
+    getchar();
 }
 
 void Menu() {
-    const char *options[] = {"Jouer", "Charger", "Quitter"}; // 3 choix
+    const char *options[] = {"Jouer", "Charger", "Quitter"};
     int choix = 0;
-    char input; // saisit par l'utilisateur
+    char input;
 
     while (1) {
-        system("clear || cls"); // nettoie le terminal
+        system("clear || cls");
 
-        printf("=== MENU PRINCIPAL ===\n\n");
+        printf("\033[1;35m╔════════════════════════════╗\033[0m\n");
+        printf("\033[1;35m║       🎮 MENU PRINCIPAL     ║\033[0m\n");
+        printf("\033[1;35m╚════════════════════════════╝\033[0m\n\n");
+
         for (int i = 0; i < 3; i++) {
-            printf("%s%s%s\n", (i == choix) ? "> " : "  ", options[i], (i == choix) ? " <" : ""); //affichage des choix et des chevrons qui montent ou descendent 
+            if (i == choix)
+                printf("\033[1;32m> %s <\033[0m\n", options[i]);
+            else
+                printf("  %s\n", options[i]);
         }
-        printf("\nNavigation: [z]Haut [s]Bas [ENTREE]Valider\n"); //guide
 
-        input = getchar(); // saisit "z" ou "s" ou "entree"
-        
+        printf("\n\033[1;36mNavigation:\033[0m [z]Haut [s]Bas [ENTREE]Valider\n");
+
+        input = getchar();
+
         switch (input) {
-            case 'z': case 'Z': if (choix > 0) choix--; break; //on monte (Jouer 0, Charger 1, Quitter 2), donc on diminue choix
-            case 's': case 'S': if (choix < 2) choix++; break; // on descend (Jouer 0, Charger 1, Quitter 2), donc on augmente choix
+            case 'z': case 'Z': if (choix > 0) choix--; break;
+            case 's': case 'S': if (choix < 2) choix++; break;
             case '\n':
-                if (choix == 0) return system("clear || cls");  // Quitte le menu pour lancer le jeu, et efface le menu
-                if (choix == 1) charger(); // charge une sauvegarde
-                if (choix == 2) printf("Bye Bye \\o/\n"); exit(0); //Quitte le jeu
+                if (choix == 0) return system("clear || cls");
+                if (choix == 1) charger();
+                if (choix == 2) {
+                    printf("\033[1;31mBye Bye 👋\n\033[0m");
+                    exit(0);
+                }
                 break;
         }
-        while (getchar() != '\n'); //lecture du 1er caractère saisit
+        while (getchar() != '\n'); // nettoyage du buffer
     }
 }
