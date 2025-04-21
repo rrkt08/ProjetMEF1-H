@@ -5,31 +5,30 @@
 int card_user() {
     int a;
     printf("\033[1;36m╔═══════════════════════════════════════╗\033[0m\n");
-    printf("\033[1;36m║ 🃏  Choix du nombre de cartes/joueur  ║\033[0m\n");
+    printf("\033[1;36m  🃏  Choix du nombre de cartes/joueur   \033[0m\n");
     printf("\033[1;36m╚═══════════════════════════════════════╝\033[0m\n\n");
 
     printf("➡️  Combien de cartes ? (entre \033[1;33m3\033[0m et \033[1;33m10\033[0m)\n> ");
     scanf("%d", &a);
-    while ((a > 10) || (a < 3)) {
-        printf("\033[1;31mErreur !\033[0m Nombre de cartes entre 3 et 10\n> ");
-        scanf("%d", &a);
+    while((scanf("%d", &a) != 1 || a < 3 || a > 10)) {
+        printf("\033[1;31mErreur!\033[0m Entre 3 et 10.\n");
+        while(getchar() != '\n');
     }
 
     system("clear || cls");
-    return a;
+    return a;   
 }
 
 int nbr_user() {
     int a;
     printf("\033[1;36m╔═══════════════════════════════════╗\033[0m\n");
-    printf("\033[1;36m║ 👥  Nombre de joueurs à définir  ║\033[0m\n");
+    printf("\033[1;36m  👥  Nombre de joueurs à définir   \033[0m\n");
     printf("\033[1;36m╚═══════════════════════════════════╝\033[0m\n\n");
 
     printf("➡️  Combien de joueurs ? (entre \033[1;33m2\033[0m et \033[1;33m4\033[0m)\n> ");
-    scanf("%d", &a);
-    while ((a > 4) || (a < 2)) {
+    while((scanf("%d", &a) != 1 || a < 2 || a > 4)) {
         printf("\033[1;31mErreur !\033[0m Nombre de joueurs entre 2 et 4\n> ");
-        scanf("%d", &a);
+        while(getchar() != '\n');
     }
 
     system("clear || cls");
@@ -40,7 +39,7 @@ void crea_joueurs(Joueur *j, int n) {
     system("clear || cls");
 
     printf("\033[1;36m╔══════════════════════════════════════╗\033[0m\n");
-    printf("\033[1;36m║      🎮  CRÉATION DES JOUEURS        ║\033[0m\n");
+    printf("\033[1;36m      🎮  CRÉATION DES JOUEURS          \033[0m\n");
     printf("\033[1;36m╚══════════════════════════════════════╝\033[0m\n\n");
 
     for (int i = 0; i < n; i++) {
@@ -50,7 +49,7 @@ void crea_joueurs(Joueur *j, int n) {
     }
 
     printf("\033[1;36m╔══════════════════════════════════════╗\033[0m\n");
-    printf("\033[1;36m║     ✅ Tous les joueurs sont prêts ! ║\033[0m\n");
+    printf("\033[1;36m     ✅ Tous les joueurs sont prêts !  \033[0m\n");
     printf("\033[1;36m╚══════════════════════════════════════╝\033[0m\n");
 
     printf("\n\033[1;34mAppuyez sur [Entrée] pour continuer...\033[0m");
@@ -61,7 +60,7 @@ void crea_joueurs(Joueur *j, int n) {
 void charger() {
     system("clear || cls");
     printf("\033[1;34m╔══════════════════════════════╗\033[0m\n");
-    printf("\033[1;34m║ 📂  Chargement d'une partie  ║\033[0m\n");
+    printf("\033[1;34m  📂  Chargement d'une partie  \033[0m\n");
     printf("\033[1;34m╚══════════════════════════════╝\033[0m\n\n");
 
     printf("\033[1;33mLe jeu est chargé ! (placeholder)\033[0m\n");
@@ -77,9 +76,10 @@ void Menu() {
 
     while (1) {
         system("clear || cls");
+        
 
         printf("\033[1;35m╔════════════════════════════╗\033[0m\n");
-        printf("\033[1;35m║       🎮 MENU PRINCIPAL     ║\033[0m\n");
+        printf("\033[1;35m       🎮 MENU PRINCIPAL     \033[0m\n");
         printf("\033[1;35m╚════════════════════════════╝\033[0m\n\n");
 
         for (int i = 0; i < 3; i++) {
