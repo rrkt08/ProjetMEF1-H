@@ -1,15 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "fichier.h"
 
 int card_user() {
     int a;
-    printf("\033[1;36m╔═══════════════════════════════════════╗\033[0m\n");
-    printf("\033[1;36m  🃏  Choix du nombre de cartes/joueur   \033[0m\n");
-    printf("\033[1;36m╚═══════════════════════════════════════╝\033[0m\n\n");
+    printf("\033[1;36m╔════════════════════════════════════════════════╗\033[0m\n");
+    printf("\033[1;36m║  \U0001F0CF  CHOIX DU NOMBRE DE CARTES / JOUEUR        ║\033[0m\n");
+    printf("\033[1;36m╚════════════════════════════════════════════════╝\033[0m\n\n");
 
-    printf("➡️  Combien de cartes ? (entre \033[1;33m3\033[0m et \033[1;33m10\033[0m)\n> ");
-    scanf("%d", &a);
+    printf("\u27A1 Combien de cartes ? (entre \033[1;33m3\033[0m et \033[1;33m10\033[0m)\n> ");
     while((scanf("%d", &a) != 1 || a < 3 || a > 10)) {
         printf("\033[1;31mErreur!\033[0m Entre 3 et 10.\n");
         while(getchar() != '\n');
@@ -21,11 +21,11 @@ int card_user() {
 
 int nbr_user() {
     int a;
-    printf("\033[1;36m╔═══════════════════════════════════╗\033[0m\n");
-    printf("\033[1;36m  👥  Nombre de joueurs à définir   \033[0m\n");
-    printf("\033[1;36m╚═══════════════════════════════════╝\033[0m\n\n");
+    printf("\033[1;36m╔═════════════════════════════════════════╗\033[0m\n");
+    printf("\033[1;36m║  \U0001F46B  NOMBRE DE JOUEURS À DÉFINIR        ║\033[0m\n");
+    printf("\033[1;36m╚═════════════════════════════════════════╝\033[0m\n\n");
 
-    printf("➡️  Combien de joueurs ? (entre \033[1;33m2\033[0m et \033[1;33m4\033[0m)\n> ");
+    printf("\u27A1  Combien de joueurs ? (entre \033[1;33m2\033[0m et \033[1;33m4\033[0m)\n> ");
     while((scanf("%d", &a) != 1 || a < 2 || a > 4)) {
         printf("\033[1;31mErreur !\033[0m Nombre de joueurs entre 2 et 4\n> ");
         while(getchar() != '\n');
@@ -38,30 +38,30 @@ int nbr_user() {
 void crea_joueurs(Joueur *j, int n) {
     system("clear || cls");
 
-    printf("\033[1;36m╔══════════════════════════════════════╗\033[0m\n");
-    printf("\033[1;36m      🎮  CRÉATION DES JOUEURS          \033[0m\n");
-    printf("\033[1;36m╚══════════════════════════════════════╝\033[0m\n\n");
+    printf("\033[1;36m╔══════════════════════════════════╗\033[0m\n");
+    printf("\033[1;36m║  \U0001F3AE  CRÉATION DES JOUEURS        ║\033[0m\n");
+    printf("\033[1;36m╚══════════════════════════════════╝\033[0m\n\n");
 
     for (int i = 0; i < n; i++) {
-        printf("\033[1;33m🧑  Nom du joueur %d : \033[0m", i + 1);
+        printf("\033[1;33m\U0001F9D1  Nom du joueur %d : \033[0m", i + 1);
         scanf("%s", j[i].nom);
-        printf("\033[1;32m✔️  Bienvenue, %s !\n\n\033[0m", j[i].nom);
+        printf("\033[1;32m\U00002705  Bienvenue, %s !\n\n\033[0m", j[i].nom);
     }
 
-    printf("\033[1;36m╔══════════════════════════════════════╗\033[0m\n");
-    printf("\033[1;36m     ✅ Tous les joueurs sont prêts !  \033[0m\n");
-    printf("\033[1;36m╚══════════════════════════════════════╝\033[0m\n");
+    printf("\033[1;36m╔═══════════════════════════════════════════╗\033[0m\n");
+    printf("\033[1;36m║  \U00002705  TOUS LES JOUEURS SONT PRÊTS !        ║\033[0m\n");
+    printf("\033[1;36m╚═══════════════════════════════════════════╝\033[0m\n");
 
     printf("\n\033[1;34mAppuyez sur [Entrée] pour continuer...\033[0m");
-    while (getchar() != '\n'); // nettoie le buffer
-    getchar(); // attend Entrée
+    while (getchar() != '\n');
+    getchar();
 }
 
 void charger() {
     system("clear || cls");
-    printf("\033[1;34m╔══════════════════════════════╗\033[0m\n");
-    printf("\033[1;34m  📂  Chargement d'une partie  \033[0m\n");
-    printf("\033[1;34m╚══════════════════════════════╝\033[0m\n\n");
+    printf("\033[1;34m╔═════════════════════════════════════╗\033[0m\n");
+    printf("\033[1;34m║  \U0001F4C2  CHARGEMENT D'UNE PARTIE        ║\033[0m\n");
+    printf("\033[1;34m╚═════════════════════════════════════╝\033[0m\n\n");
 
     printf("\033[1;33mLe jeu est chargé ! (placeholder)\033[0m\n");
     printf("\033[1;34mAppuyez sur Entrée pour revenir...\033[0m");
@@ -79,7 +79,7 @@ void Menu() {
         
 
         printf("\033[1;35m╔════════════════════════════╗\033[0m\n");
-        printf("\033[1;35m       🎮 MENU PRINCIPAL     \033[0m\n");
+        printf("\033[1;35m║  \U0001F3AE  MENU PRINCIPAL        ║\033[0m\n");
         printf("\033[1;35m╚════════════════════════════╝\033[0m\n\n");
 
         for (int i = 0; i < 3; i++) {
@@ -89,7 +89,7 @@ void Menu() {
                 printf("  %s\n", options[i]);
         }
 
-        printf("\n\033[1;36mNavigation:\033[0m [z]Haut [s]Bas [ENTREE]Valider\n");
+        printf("\n\033[1;36mNavigation:\033[0m [z]Haut [s]Bas\n[ENTREE]Valider\n");
 
         input = getchar();
 
@@ -106,5 +106,26 @@ void Menu() {
                 break;
         }
         while (getchar() != '\n'); // nettoyage du buffer
+    }
+}
+
+void melange(Pioche *p){
+    srand(time(NULL));
+    FILE *f = fopen("Value_file.txt", "r");
+    int val, nbr;
+    int x = 0;
+    p->nbr_cartes = 150;
+    while(fscanf(f, "%d %d", &val, &nbr) == 2){
+        for(int i = 0; i < nbr; i++){
+            p->cartes[x].valeur = val;
+            x++;
+        }
+    }
+    fclose(f);
+    for(int j = 0; j < p->nbr_cartes-1; j++){
+        int k = j + rand()%(p->nbr_cartes-1);
+        Carte temporaire = p->cartes[j];
+        p->cartes[j] = p->cartes[k];
+        p->cartes[k] = temporaire;
     }
 }
