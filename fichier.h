@@ -23,11 +23,8 @@ int nbr_user();
 void crea_joueurs(Joueur *j, int n);
 void charger();
 void Menu();
+void initialiserPioche(Pioche *pioche);
+void melangerPioche(Pioche *pioche);
+int piocherCarte(Pioche *pioche);
 
 
-/*
-void distribution_carte(){
-}
-void creation_pioche_centrale(){
-}
-*/
