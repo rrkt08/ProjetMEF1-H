@@ -22,9 +22,11 @@ int card_user();
 int nbr_user();
 void crea_joueurs(Joueur *j, int n);
 void charger();
-void Menu();
+int Menu();
 void initialiserPioche(Pioche *pioche);
 void melangerPioche(Pioche *pioche);
 int piocherCarte(Pioche *pioche);
-
+void distrib_joueurs(Joueur *j, Pioche *p, int nbr_cartes, int nbr_joueur);
+void afficher_jeu(Joueur *j, int nbr_carte, int nbr_joueur);
+void echange(Joueur *j, int i_joueur, int nbr_carte, int carte_choisit);
 
