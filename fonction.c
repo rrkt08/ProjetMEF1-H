@@ -36,6 +36,10 @@ int nbr_user(){
 }
 
 void crea_joueurs(Joueur *j, int n){
+    if(j==NULL){
+        printf("Erreur mémoire");
+        exit(37);
+    }
     system("clear || cls"); // nettoie le terminal
 
     printf("\033[1;36m╔══════════════════════════════════╗\033[0m\n");
@@ -47,7 +51,7 @@ void crea_joueurs(Joueur *j, int n){
         scanf("%s", j[i].nom);
         printf("\033[1;32m\U00002705  Bienvenue, %s !\n\n\033[0m", j[i].nom);
 
-        j[i].defausse = -5; // Pour plus tard, on choisit une valeur et il y'aura une condition pour que sa affiche que la défausse est vide
+        j[i].id_defausse = -1; // Pour plus tard, on choisit une valeur et il y'aura une condition pour que sa affiche que la défausse est vide
     }
 
     printf("\033[1;36m╔═══════════════════════════════════════════╗\033[0m\n");
@@ -115,6 +119,10 @@ int Menu() {
 }
 
 void initialiserPioche(Pioche *pioche){
+    if(pioche==NULL){
+        printf("Erreur mémoire");
+        exit(38);
+    }
     FILE *fichier = fopen("Value_file.txt", "r"); // ouverture du fichier en mode lecture
     if(fichier == NULL){
         printf("Ouverture du fichier impossible\n"); // erreur fichier introuvable
@@ -138,6 +146,10 @@ void initialiserPioche(Pioche *pioche){
 }
 
 void melangerPioche(Pioche *pioche){
+    if(pioche==NULL){
+        printf("Erreur mémoire");
+        exit(50);
+    }
     srand(time(NULL)); //pour pouvoir utiliser rand()
     int i = pioche->nbr_cartes - 1; //on commence à l'indice n-1, car parcours dans un tableau
     for(i; i > 0; i--){
@@ -150,6 +162,10 @@ void melangerPioche(Pioche *pioche){
 
 // Pioche une carte 
 int piocherCarte(Pioche *pioche){
+    if(pioche==NULL){
+        printf("Erreur mémoire");
+        exit(51);
+    }
     if(pioche->nbr_cartes <= 0){
         printf("Pioche épuisée !\n");
         exit(2);  //Pour l'instant, il faudra rediriger vers une défausse
@@ -159,6 +175,10 @@ int piocherCarte(Pioche *pioche){
 }
 
 void distrib_joueurs(Joueur *j, Pioche *p, int nbr_carte, int nbr_joueur){
+    if((j==NULL)||(p==NULL)){
+        printf("Erreur mémoire");
+        exit(52);
+    }
     for (int c = 0; c < nbr_carte; c++) {
         for (int i = 0; i < nbr_joueur; i++){
             j[i].cartes[c].valeur = piocherCarte(p);
@@ -179,30 +199,87 @@ void distrib_joueurs(Joueur *j, Pioche *p, int nbr_carte, int nbr_joueur){
     getchar();
 }
 
+void ajouter_defausse(Joueur *j, int valeur) {
+    if (j->id_defausse < MAX_CARTES - 1) {
+        j->id_defausse++;
+        j->defausse[j->id_defausse] = valeur; // Ajoute à la fin
+    } else {
+        printf("Défausse pleine !\n");
+    }
+}
+
+int prendre_defausse(Joueur *j){
+    if(j==NULL){
+        printf("Erreur mémoire");
+        exit(29);
+    }
+    if(j->id_defausse >= 0){
+        int carte = j->defausse[j->id_defausse];
+        j->defausse[j->id_defausse] = -5;  // Marquer la position comme vide
+        j->id_defausse--;
+        return carte; //retourne la carte prise de la défausse
+    }
+    return -5;  // Retourne -5 si défausse vide
+}
+
+void echange_defausse(Joueur *j1, Joueur *j2, int nbr_carte) {
+    if (j2->id_defausse > 0) {
+        printf("Indiquer le numéro de la carte à échanger: ");
+        int x;
+        
+        while(scanf("%d", &x) != 1 || x < 1 || x > nbr_carte) {
+        printf("\033[1;31mErreur!\033[0m Choisissez entre 1 et %d.\n", nbr_carte);
+        while(getchar() != '\n'); 
+        printf("Choisissez une carte (1-%d) : ", nbr_carte);
+        }
+        
+        // Prendre carte de la défausse adverse
+        int nouvelle_carte = prendre_defausse(j2); 
+        
+        // Échanger avec ma carte
+        int ancienne_carte = j1->cartes[x-1].valeur;
+        j1->cartes[x-1].valeur = nouvelle_carte;
+        j1->cartes[x-1].visible = 1;
+        
+        // Ajouter ancienne carte à ma défausse
+        ajouter_defausse(j1, ancienne_carte);
+    } else {
+        printf("Défausse vide !\n");
+    }
+}
+
 //Affichage du tour avec les différentes informations sur les cartes et la défausse de chaque joueur
 void afficher_jeu(Joueur *j, int nbr_carte, int nbr_joueur){
+    if(j==NULL){
+        printf("Erreur mémoire");
+        exit(53);
+    }
     for(int i = 0; i < nbr_joueur; i++){
         printf("Joueur %s:\n", j[i].nom);
         for(int c = 0; c< nbr_carte; c++){
             if(!j[i].cartes[c].visible){ // Condition pour que les valeurs des cartes ne soient pas affichés (visible = 0)
-                printf("(face cachée)\n");
+                printf("%d:(face cachée)\n",c+1);
             }
             else{
-                printf("%d\n",j[i].cartes[c].valeur); // Si visible = 1
+                printf("%d:    %d\n",c+1,j[i].cartes[c].valeur); // Si visible = 1
             }
 
         }
-        if(j[i].defausse == -5){ // Condition choisit volontairement pour qu'au 1er tour la défausse soit vide et pas égale à 0
+        if(j[i].id_defausse == -1){ // Condition choisit volontairement pour qu'au 1er tour la défausse soit vide et pas égale à 0
             printf("défausse : (vide)\n");
         }
         else{
-            printf("défausse : %d\n", j[i].defausse);
+            printf("défausse : %d\n", j[i].defausse[j->id_defausse]);
         }
         printf("\n\n\n");
     }
 }
 
-void echange(Joueur *j, int i_joueur, int nbr_carte, int carte_choisit){
+void echange_pioche(Joueur *j, int i_joueur, int nbr_carte, int carte_choisit){
+    if(j==NULL){
+        printf("Erreur mémoire");
+        exit(54);
+    }
     printf("Indiquer le numéro de la carte à échanger: ");
     int x;
     
@@ -214,10 +291,10 @@ void echange(Joueur *j, int i_joueur, int nbr_carte, int carte_choisit){
 
     int temp = j[i_joueur].cartes[x-1].valeur;
     j[i_joueur].cartes[x-1].valeur = carte_choisit;
-    j[i_joueur].defausse = temp;
+    j[i_joueur].defausse[j->id_defausse] = temp;
     j[i_joueur].cartes[x-1].visible = 1;
     
-    printf("Carte échangée, l'ancienne carte va dans la défausse...\n");
+    printf("Carte échangée, l'ancienne carte va dans la défausse...\n\n");
 }
 
 /*void prendre_defausse(Joueur *j, int i_def){

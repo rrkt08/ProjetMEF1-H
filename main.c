@@ -47,26 +47,26 @@ int main() {
                     printf("Choisissez un joueur (1-%d) : ", nbr_j);
                 }
     
-                if (joueur[choix3-1].defausse == -5) {
+                if (prendre_defausse(&joueur[choix3-1])== -5) {
                     printf("\033[1;33mLa défausse de ce joueur est vide!\033[0m\n");
                     printf("1. Choisir un autre joueur | 2. Piocher à la place : ");
-                    int choix4;
-                    while(scanf("%d", &choix4) != 1 || (choix4 != 1 && choix4 != 2)) {
+                    while(scanf("%d", &choix3) != 1 || (choix3 != 1 && choix3 != 2)) {
                         printf("\033[1;31mErreur!\033[0m Choisissez 1 ou 2.\n");
                         while(getchar() != '\n');
                         printf("1. Choisir un autre joueur | 2. Piocher à la place : ");
                     }
-                    if (choix4 == 2) {
+                    if (choix3 == 2) {
                         choix1 = 1; // On bascule sur pioche
                         break;
                     }
                 } else {
+                    echange_defausse(&joueur[i],&joueur[choix3-1],nbr_c);
                     defausse_valide = 1;
                 }
             } while (!defausse_valide);
         }
         
-        
+        //Choix 1
             if (choix1 == 1){
                 int carte_piochee = piocherCarte(pioche);
                 printf("\n");
@@ -80,17 +80,15 @@ int main() {
                     printf("1. Echanger avec une carte | 2. Mettre dans la défausse : ");
                 }
                 if(choix2 == 1){
-                    echange(joueur,i,nbr_c,carte_piochee);
+                    echange_pioche(joueur,i,nbr_c,carte_piochee);
                 }
                 else if(choix2 == 2){
                     printf("La carte piochée va dans la défausse...\n");
-                    joueur[i].defausse = carte_piochee;
+                    ajouter_defausse(&joueur[i],carte_piochee);
                 }
             }
             
             afficher_jeu(joueur,nbr_c,nbr_j);
-          
- 
 
     // Libération mémoire
     free(joueur);

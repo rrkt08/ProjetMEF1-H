@@ -9,7 +9,8 @@ typedef struct{
 
 typedef struct{
     Carte cartes[MAX_CARTES];//tableau de cartes
-    int defausse;// vaut 0 au début (vide)
+    int defausse[MAX_CARTES];
+    int id_defausse;// vaut 0 au début (vide)
     char nom[30];
 }Joueur;
 
@@ -28,5 +29,7 @@ void melangerPioche(Pioche *pioche);
 int piocherCarte(Pioche *pioche);
 void distrib_joueurs(Joueur *j, Pioche *p, int nbr_cartes, int nbr_joueur);
 void afficher_jeu(Joueur *j, int nbr_carte, int nbr_joueur);
-void echange(Joueur *j, int i_joueur, int nbr_carte, int carte_choisit);
-
+void echange_pioche(Joueur *j, int i_joueur, int nbr_carte, int carte_choisit);
+void echange_defausse(Joueur *j1, Joueur *j2, int nbr_carte);
+int prendre_defausse(Joueur *j);
+void ajouter_defausse(Joueur *j, int valeur); 
