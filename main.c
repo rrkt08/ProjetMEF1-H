@@ -19,11 +19,13 @@ int main() {
     initialiserPioche(pioche);
     melangerPioche(pioche);
     distrib_joueurs(joueur,pioche,nbr_c,nbr_j);
-    
-    
-    int i = 0;
-    
-    printf("\n=== Tour de %s ===\n\n", joueur[i].nom);
+
+
+
+    int partie_terminee = 0;
+    while(!partie_terminee){
+        for(int i = 0; i< nbr_j; i++){
+            printf("\n=== Tour de %s ===\n\n", joueur[i].nom);
             int defausse_valide = 0;
             afficher_jeu(joueur,nbr_c,nbr_j);
             
@@ -36,35 +38,24 @@ int main() {
                 printf("1. Piocher | 2. Prendre d'une défausse : ");
             }
           
-            if (choix1 == 2){
-               // Gestion des défausses
-            int choix3;
-            do {
+            if (choix1 == 2) {
+                int choix_joueur;
                 printf("Choisissez un joueur (1-%d) : ", nbr_j);
-                while(scanf("%d", &choix3) != 1 || choix3 < 1 || choix3 > nbr_j) {
+                while(scanf("%d", &choix_joueur) != 1 || choix_joueur < 1 || choix_joueur > nbr_j){
                     printf("\033[1;31mErreur!\033[0m Joueur invalide.\n");
                     while(getchar() != '\n');
                     printf("Choisissez un joueur (1-%d) : ", nbr_j);
                 }
-    
-                if (prendre_defausse(&joueur[choix3-1])== -5) {
+            
+                if (joueur[choix_joueur-1].id_defausse < 0) {
                     printf("\033[1;33mLa défausse de ce joueur est vide!\033[0m\n");
-                    printf("1. Choisir un autre joueur | 2. Piocher à la place : ");
-                    while(scanf("%d", &choix3) != 1 || (choix3 != 1 && choix3 != 2)) {
-                        printf("\033[1;31mErreur!\033[0m Choisissez 1 ou 2.\n");
-                        while(getchar() != '\n');
-                        printf("1. Choisir un autre joueur | 2. Piocher à la place : ");
-                    }
-                    if (choix3 == 2) {
-                        choix1 = 1; // On bascule sur pioche
-                        break;
-                    }
-                } else {
-                    echange_defausse(&joueur[i],&joueur[choix3-1],nbr_c);
-                    defausse_valide = 1;
+                    // Retour au début du tour
+                    continue;
                 }
-            } while (!defausse_valide);
-        }
+            
+                // Appel à la fonction modifiée
+                echange_defausse(&joueur[i], &joueur[choix_joueur-1], nbr_c);
+            }
         
         //Choix 1
             if (choix1 == 1){
@@ -87,8 +78,14 @@ int main() {
                     ajouter_defausse(&joueur[i],carte_piochee);
                 }
             }
-            
-            afficher_jeu(joueur,nbr_c,nbr_j);
+
+            if(verifJoueurAtermine(joueur,nbr_c,i)) {  // À implémenter
+                printf("Le Joueur %s a terminé !\n", joueur[i].nom);
+                exit(92);
+            }
+        }
+    }
+
 
     // Libération mémoire
     free(joueur);

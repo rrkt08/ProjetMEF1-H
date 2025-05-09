@@ -33,3 +33,4 @@ void echange_pioche(Joueur *j, int i_joueur, int nbr_carte, int carte_choisit);
 void echange_defausse(Joueur *j1, Joueur *j2, int nbr_carte);
 int prendre_defausse(Joueur *j);
 void ajouter_defausse(Joueur *j, int valeur); 
+int verifJoueurAtermine(Joueur *j, int nbr_carte, int i_joueur);

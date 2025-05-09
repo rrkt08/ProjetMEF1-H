@@ -223,29 +223,32 @@ int prendre_defausse(Joueur *j){
 }
 
 void echange_defausse(Joueur *j1, Joueur *j2, int nbr_carte) {
-    if (j2->id_defausse > 0) {
-        printf("Indiquer le numéro de la carte à échanger: ");
-        int x;
-        
-        while(scanf("%d", &x) != 1 || x < 1 || x > nbr_carte) {
+    
+    // 1. Afficher la carte disponible dans la défausse
+    int carte_defausse = j2->defausse[j2->id_defausse];
+    printf("Carte disponible dans la défausse : %d\n", carte_defausse);
+
+    // 2. Demander quelle carte échanger
+    printf("%s, choisissez la carte à échanger (1-%d) : ", j1->nom, nbr_carte);
+    int choix;
+    while(scanf("%d", &choix) != 1 || choix < 1 || choix > nbr_carte) {
         printf("\033[1;31mErreur!\033[0m Choisissez entre 1 et %d.\n", nbr_carte);
-        while(getchar() != '\n'); 
-        printf("Choisissez une carte (1-%d) : ", nbr_carte);
-        }
-        
-        // Prendre carte de la défausse adverse
-        int nouvelle_carte = prendre_defausse(j2); 
-        
-        // Échanger avec ma carte
-        int ancienne_carte = j1->cartes[x-1].valeur;
-        j1->cartes[x-1].valeur = nouvelle_carte;
-        j1->cartes[x-1].visible = 1;
-        
-        // Ajouter ancienne carte à ma défausse
-        ajouter_defausse(j1, ancienne_carte);
-    } else {
-        printf("Défausse vide !\n");
+        while(getchar() != '\n');
+        printf("Choisissez la carte à échanger (1-%d) : ", nbr_carte);
     }
+
+    // 3. Effectuer l'échange
+    int ancienne_carte = j1->cartes[choix-1].valeur;
+    j1->cartes[choix-1].valeur = carte_defausse;
+    j1->cartes[choix-1].visible = 1;
+
+    // 4. Mettre l'ancienne carte dans la défausse du joueur actuel
+    ajouter_defausse(j1, ancienne_carte);
+
+    // 5. Retirer la carte de la défausse adverse
+    prendre_defausse(j2);
+
+    printf("Échange effectué !\n");
 }
 
 //Affichage du tour avec les différentes informations sur les cartes et la défausse de chaque joueur
@@ -284,26 +287,28 @@ void echange_pioche(Joueur *j, int i_joueur, int nbr_carte, int carte_choisit){
     int x;
     
     while(scanf("%d", &x) != 1 || x < 1 || x > nbr_carte) {
-    printf("\033[1;31mErreur!\033[0m Choisissez entre 1 et %d.\n", nbr_carte);
-    while(getchar() != '\n'); 
-    printf("Choisissez une carte (1-%d) : ", nbr_carte);
-}
+        printf("\033[1;31mErreur!\033[0m Choisissez entre 1 et %d.\n", nbr_carte);
+        while(getchar() != '\n'); 
+        printf("Choisissez une carte (1-%d) : ", nbr_carte);
+    }
 
     int temp = j[i_joueur].cartes[x-1].valeur;
     j[i_joueur].cartes[x-1].valeur = carte_choisit;
-    j[i_joueur].defausse[j->id_defausse] = temp;
+    ajouter_defausse(&j[i_joueur], temp); // Ajoute à la défausse du joueur
     j[i_joueur].cartes[x-1].visible = 1;
     
     printf("Carte échangée, l'ancienne carte va dans la défausse...\n\n");
 }
-
-/*void prendre_defausse(Joueur *j, int i_def){
-    if(j[i_def].defausse == -5){
-        printf("Défausse vide ! Choisir une autre défausse ou piocher\n");
-        int choix;
-        scanf("%d",&choix);
-        
+    
+int verifJoueurAtermine(Joueur *j, int nbr_carte, int i_joueur){
+    if(j==NULL){
+        printf("Erreur mémoire\n");
+        exit(70);
     }
-    
-}*/
-    
+    for(int i = 0; i< nbr_carte; i++){
+        if(!j[i_joueur].cartes[i].visible){
+            return 0;
+        } 
+    }
+    return 1;
+}
