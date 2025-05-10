@@ -3,30 +3,37 @@
 #include "fichier.h"
 
 int main() {
-    Menu();
+    Joueur *joueur = NULL;
+    Pioche *pioche = NULL;
+    int nbr_j = 0;
+    int nbr_c = 0;
 
-    // Saisie du nombre de joueurs et cartes
-    int nbr_j = nbr_user();      // nombre de joueurs
-    int nbr_c = card_user();      // nombre de cartes par joueur
+while(1){
 
-    // Allocation mémoire pour les joueurs
-    Joueur *joueur = malloc(sizeof(Joueur) * nbr_j);
+    int menu_result = Menu();  // 1 = jouer, 2 = charger, 3 = quitter (déjà géré)
 
-    // Création des joueurs avec affichage stylisé
-    crea_joueurs(joueur, nbr_j);
+    if (menu_result == 2) { // option "Charger" dans le menu
+        charger_partie(&joueur, &nbr_j, &nbr_c, &pioche);
+        if(joueur==NULL){
+            continue;
+        }
+    } else {
+        // Création nouvelle partie
+        nbr_j = nbr_user();      // nombre de joueurs
+        nbr_c = card_user();     // nombre de cartes par joueur
+        joueur = malloc(sizeof(Joueur) * nbr_j); // Allocation mémoire pour les joueurs
+        crea_joueurs(joueur, nbr_j);
 
-    Pioche *pioche = malloc(sizeof(Pioche));
-    initialiserPioche(pioche);
-    melangerPioche(pioche);
-    distrib_joueurs(joueur,pioche,nbr_c,nbr_j);
-
-
-
+        pioche = malloc(sizeof(Pioche));
+        initialiserPioche(pioche);
+        melangerPioche(pioche);
+        distrib_joueurs(joueur, pioche, nbr_c, nbr_j);
+    }
+    
     int partie_terminee = 0;
     while(!partie_terminee){
         for(int i = 0; i< nbr_j; i++){
             printf("\n=== Tour de %s ===\n\n", joueur[i].nom);
-            int defausse_valide = 0;
             afficher_jeu(joueur,nbr_c,nbr_j);
             
             //Le joueur choisit une action
@@ -83,12 +90,21 @@ int main() {
                 printf("Le Joueur %s a terminé !\n", joueur[i].nom);
                 exit(92);
             }
+        // Sauvegarde à la fin
+        char save;
+        printf("\n\033[1;33mSouhaitez-vous sauvegarder la partie ? (o/n) : \033[0m");
+        scanf(" %c", &save);
+        if (save == 'o' || save == 'O') {
+            sauvegarder_partie(joueur, nbr_j, nbr_c, pioche);
         }
     }
+}
+// calcul_score(...);
 
 
     // Libération mémoire
     free(joueur);
     free(pioche);
+}
     return 1;
 }

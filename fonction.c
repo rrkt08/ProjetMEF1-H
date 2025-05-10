@@ -63,18 +63,6 @@ void crea_joueurs(Joueur *j, int n){
     getchar();
 }
 
-void charger() {
-    system("clear || cls"); // nettoie le terminal
-    printf("\033[1;34m╔═════════════════════════════════════╗\033[0m\n");
-    printf("\033[1;34m║  \U0001F4C2  CHARGEMENT D'UNE PARTIE        ║\033[0m\n");
-    printf("\033[1;34m╚═════════════════════════════════════╝\033[0m\n\n");
-
-    printf("\033[1;33mLe jeu est chargé ! (placeholder)\033[0m\n");
-    printf("\033[1;34mAppuyez sur Entrée pour revenir...\033[0m");
-    while (getchar() != '\n'); // Attendre Entrée
-    getchar();
-}
-
 int Menu() {
     const char *options[] = {"Jouer", "Charger", "Quitter"};
     int choix = 0;
@@ -107,7 +95,7 @@ int Menu() {
                     system("clear || cls"); //Quitte le menu pour lancer le jeu
                     return 1;
                 } 
-                if (choix == 1) charger(); //charge une partie sauvegardée
+                if (choix == 1) return 2; //charge une partie sauvegardée
                 if (choix == 2) {
                     printf("\033[1;31mBye Bye 👋\n\033[0m");
                     exit(40); //Quitte le jeu
@@ -116,6 +104,70 @@ int Menu() {
         }
         while (getchar() != '\n'); //lecture du 1er caractère seulement, tous les autres ne sont pas pris en compte ("jiazoiahfohza", lecture: j)
     }
+}
+
+void sauvegarder_partie(Joueur *j, int nbr_joueur, int nbr_carte, Pioche *p) {
+    FILE *f = fopen("sauvegarde.txt", "w");
+    if (!f) {
+        printf("\033[1;31mErreur ouverture du fichier de sauvegarde !\033[0m\n");
+        return;
+    }
+
+    fprintf(f, "%d %d\n", nbr_joueur, nbr_carte);
+
+    for (int i = 0; i < nbr_joueur; i++) {
+        fprintf(f, "%s %d\n", j[i].nom, j[i].id_defausse);
+        for (int c = 0; c < nbr_carte; c++) {
+            fprintf(f, "%d %d\n", j[i].cartes[c].valeur, j[i].cartes[c].visible);
+        }
+        for (int d = 0; d <= j[i].id_defausse; d++) {
+            fprintf(f, "%d\n", j[i].defausse[d]);
+        }
+    }
+
+    fprintf(f, "%d\n", p->nbr_cartes);
+    for (int i = 0; i < p->nbr_cartes; i++) {
+        fprintf(f, "%d\n", p->cartes[i].valeur);
+    }
+
+    fclose(f);
+    printf("\033[1;32mSauvegarde effectuée avec succès !\033[0m\n");
+    exit(39);
+}
+
+void charger_partie(Joueur **j, int *nbr_joueur, int *nbr_carte, Pioche **p) {
+    FILE *f = fopen("sauvegarde.txt", "r");
+    if (!f) {
+        printf("\033[1;31mAucune sauvegarde trouvée !\033[0m\n");
+        printf("\033[1;34mAppuyez sur Entrée pour revenir au menu...\033[0m");
+        while (getchar() != '\n'); // Vide le buffer
+        getchar(); // Attend l'appui sur Entrée
+        system("clear || cls");
+    }
+
+    fscanf(f, "%d %d\n", nbr_joueur, nbr_carte);
+
+    *j = malloc(sizeof(Joueur) * (*nbr_joueur));
+    *p = malloc(sizeof(Pioche));
+
+    for (int i = 0; i < *nbr_joueur; i++) {
+        fscanf(f, "%s %d\n", (*j)[i].nom, &(*j)[i].id_defausse);
+        for (int c = 0; c < *nbr_carte; c++) {
+            fscanf(f, "%d %d\n", &(*j)[i].cartes[c].valeur, &(*j)[i].cartes[c].visible);
+        }
+        for (int d = 0; d <= (*j)[i].id_defausse; d++) {
+            fscanf(f, "%d\n", &(*j)[i].defausse[d]);
+        }
+    }
+
+    fscanf(f, "%d\n", &(*p)->nbr_cartes);
+    for (int i = 0; i < (*p)->nbr_cartes; i++) {
+        fscanf(f, "%d\n", &(*p)->cartes[i].valeur);
+        (*p)->cartes[i].visible = 0;
+    }
+
+    fclose(f);
+    printf("\033[1;34mPartie restaurée depuis la sauvegarde !\033[0m\n");
 }
 
 void initialiserPioche(Pioche *pioche){
@@ -151,8 +203,8 @@ void melangerPioche(Pioche *pioche){
         exit(50);
     }
     srand(time(NULL)); //pour pouvoir utiliser rand()
-    int i = pioche->nbr_cartes - 1; //on commence à l'indice n-1, car parcours dans un tableau
-    for(i; i > 0; i--){
+    //on commence à l'indice n-1, car parcours dans un tableau
+    for(int i = pioche->nbr_cartes - 1; i > 0; i--){
         int j = rand() % (i + 1); //on prend une valeur j comprise entre 0 et i (aléatoire)
         Carte temp = pioche->cartes[i]; //variable temporaire qui stocke la valeur de la carte à l'indice i
         pioche->cartes[i] = pioche->cartes[j]; //échange des valeurs
@@ -272,7 +324,7 @@ void afficher_jeu(Joueur *j, int nbr_carte, int nbr_joueur){
             printf("défausse : (vide)\n");
         }
         else{
-            printf("défausse : %d\n", j[i].defausse[j->id_defausse]);
+            printf("défausse : %d\n", j[i].defausse[j[i].id_defausse]);
         }
         printf("\n\n\n");
     }
@@ -294,8 +346,8 @@ void echange_pioche(Joueur *j, int i_joueur, int nbr_carte, int carte_choisit){
 
     int temp = j[i_joueur].cartes[x-1].valeur;
     j[i_joueur].cartes[x-1].valeur = carte_choisit;
-    ajouter_defausse(&j[i_joueur], temp); // Ajoute à la défausse du joueur
     j[i_joueur].cartes[x-1].visible = 1;
+    ajouter_defausse(&j[i_joueur], temp); // Ajoute à la défausse du joueur
     
     printf("Carte échangée, l'ancienne carte va dans la défausse...\n\n");
 }

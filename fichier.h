@@ -22,7 +22,6 @@ typedef struct{
 int card_user();
 int nbr_user();
 void crea_joueurs(Joueur *j, int n);
-void charger();
 int Menu();
 void initialiserPioche(Pioche *pioche);
 void melangerPioche(Pioche *pioche);
@@ -34,3 +33,5 @@ void echange_defausse(Joueur *j1, Joueur *j2, int nbr_carte);
 int prendre_defausse(Joueur *j);
 void ajouter_defausse(Joueur *j, int valeur); 
 int verifJoueurAtermine(Joueur *j, int nbr_carte, int i_joueur);
+void sauvegarder_partie(Joueur *j, int nbr_joueur, int nbr_carte, Pioche *p);
+void charger_partie(Joueur **j, int *nbr_joueur, int *nbr_carte, Pioche **p);
