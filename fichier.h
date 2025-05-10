@@ -35,3 +35,5 @@ void ajouter_defausse(Joueur *j, int valeur);
 int verifJoueurAtermine(Joueur *j, int nbr_carte, int i_joueur);
 void sauvegarder_partie(Joueur *j, int nbr_joueur, int nbr_carte, Pioche *p);
 void charger_partie(Joueur **j, int *nbr_joueur, int *nbr_carte, Pioche **p);
+int sauvegarde_existe(); 
+void afficher_carte_horizontal(Joueur *j, int nbr_c);
