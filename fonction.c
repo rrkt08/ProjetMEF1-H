@@ -269,7 +269,7 @@ void distrib_joueurs(Joueur *j, Pioche *p, int nbr_carte, int nbr_joueur){
     }
 
     printf("\033[1;32m\u2705 Cartes distribuées avec succès à tous les joueurs.\033[0m\n");
-    printf("\033[1;34mAppuyez sur [Entrée] pour continuer...\033[0m");
+    printf("\033[1;34mAppuyez 2x sur [Entrée] pour continuer...\033[0m");
     while (getchar() != '\n');
     getchar();
 
@@ -277,7 +277,7 @@ void distrib_joueurs(Joueur *j, Pioche *p, int nbr_carte, int nbr_joueur){
     printf("\033[1;35m╔════════════════════════════════╗\033[0m\n");
     printf("\033[1;35m║  \U0001F6A8  LE JEU PEUT COMMENCER !   ║\033[0m\n");
     printf("\033[1;35m╚════════════════════════════════╝\033[0m\n");
-    printf("\n\033[1;34mAppuyez sur [Entrée] pour afficher le plateau...\033[0m");
+    printf("\n\033[1;34mAppuyez sur 2x [Entrée] pour afficher le plateau...\033[0m");
     while (getchar() != '\n');
     getchar();
 }
@@ -337,59 +337,166 @@ void echange_defausse(Joueur *j1, Joueur *j2, int nbr_carte) {
     printf("\033[1;32mÉchange effectué \U00002705\033[0m\n");
 }
 
+const char* couleur_carte(int val){
+    switch (val) {
+        case -2: return "\033[101m";      // Rouge clair
+        case -1: return "\033[45m";       // Magenta foncé
+        case 0:  return "\033[105m";      // Violet clair
+        case 1:  return "\033[43m";       // Jaune foncé
+        case 2:  return "\033[103m";      // Jaune clair
+        case 3:  return "\033[42m";       // Vert foncé
+        case 4:  return "\033[102m";      // Vert clair
+        case 5:  return "\033[46m";       // Cyan foncé
+        case 6:  return "\033[106m";      // Cyan clair
+        case 7:  return "\033[44m";       // Bleu foncé
+        case 8:  return "\033[104m";      // Bleu clair
+        case 9:  return "\033[47m";       // Blanc
+        case 10: return "\033[100m";      // Gris foncé
+        case 11: return "\033[107;30m";   // Gris clair + texte noir
+        case 12: return "\033[43;30m";    // Jaune + texte noir
+        default: return "\033[100m";      // Par défaut : gris foncé
+    }
+}
+
+
+void afficher_titre_joueur(const char *nom, int numero) {
+    int len_nom = strlen(nom);
+    int total = 15 + len_nom; // Ajuste la largeur totale ici si besoin
+    int nb_egal = (total - strlen(nom) - 8) / 2;
+
+    printf("\033[1;35m");
+    for (int i = 0; i < nb_egal; i++){
+        printf("=");
+    } 
+    printf(" (%d) Joueur %s ", numero, nom);
+    for (int i = 0; i < nb_egal; i++){
+        printf("=");
+    } 
+    printf("\033[0m");
+}
+
+//Affichage du tour avec les différentes informations sur les cartes et la défausse de chaque joueur
 void afficher_jeu(Joueur *j, int nbr_carte, int nbr_joueur) {
-    if(j == NULL) {
+    if (j == NULL) {
         printf("Erreur mémoire");
         exit(53);
     }
-    
-    for(int i = 0; i < nbr_joueur; i++) {
-        printf("\n\033[1;35m=== Joueur %s ===\033[0m\n", j[i].nom);
-        
-        afficher_carte_horizontal(&j[i], nbr_carte);
-        
-        printf("\nDéfausse: ");
-        if(j[i].id_defausse == -1) {
-            printf("(vide)\n");
-        } else {
-            const char *fond;
-            int val = j[i].defausse[j[i].id_defausse];
-            
-            if (val <= -2){
-                fond = "\033[41m";  // Rouge
-            }
-            else if (val == -1){
-                fond = "\033[45m";  // Magenta
-            }  
-            else if (val == 0){
-                fond = "\033[105m"; // Violet clair
-            }   
-            else if (val <= 3){
-                fond = "\033[43m";  // Jaune
-            }   
-            else if (val <= 6){
-                fond = "\033[42m";  // Vert
-            }   
-            else if (val <= 9){
-                fond = "\033[46m";  // Cyan
-            }   
-            else if (val <= 12){
-                fond = "\033[44m";  // Bleu
-            }  
-            else{
-                fond = "\033[47m";  // Blanc
-            }                 
-            
-            printf("\n"); // Nouvelle ligne pour bien aligner la carte de défausse
-            printf("%s╔══════╗\033[0m\n", fond);
-            printf("%s║      ║\033[0m\n", fond);
-            printf("%s║ %2d   ║\033[0m\n", fond, val);
-            printf("%s║      ║\033[0m\n", fond);
-            printf("%s╚══════╝\033[0m\n", fond);
-        }
-        
-        printf("\n");
+
+    int ligne_joueurs;
+    if (nbr_joueur >= 3) {
+        ligne_joueurs = 2;
+    } else {
+        ligne_joueurs = nbr_joueur;
     }
+
+        for (int ligne = 0; ligne < ligne_joueurs; ligne++) {
+            int joueur_gauche = ligne;
+            int joueur_droite = ligne + 2;
+
+            printf("\n");
+            afficher_titre_joueur(j[joueur_gauche].nom, joueur_gauche+1);
+
+            if (nbr_joueur == 4 || (nbr_joueur == 3 && ligne == 0)) {
+                int espacement = 6;  
+                int decalage_nom_droit = (nbr_carte * 9) + espacement;
+
+                for (int i = 0; i < decalage_nom_droit; i++) printf(" ");
+                afficher_titre_joueur(j[joueur_droite].nom, joueur_droite+1);
+            }
+            printf("\n");
+            
+
+            for (int ligne_carte = 0; ligne_carte < 7; ligne_carte++) {
+                for (int c = 0; c < nbr_carte; c++) {
+                    const char *fond = "\033[100m";
+                    if (j[joueur_gauche].cartes[c].visible) {
+                        fond = couleur_carte(j[joueur_gauche].cartes[c].valeur);
+                    }
+
+                    if (ligne_carte == 0) printf("%s╔══════╗\033[0m ", fond);
+                    else if (ligne_carte == 1 || ligne_carte == 5) printf("%s║      ║\033[0m ", fond);
+                    else if (ligne_carte == 3) {
+                        if (j[joueur_gauche].cartes[c].visible)
+                            printf("%s║ %4d ║\033[0m ", fond, j[joueur_gauche].cartes[c].valeur);
+                        else
+                            printf("%s║ CARD ║\033[0m ", fond);
+                    } else if (ligne_carte == 6) printf("%s╚══════╝\033[0m ", fond);
+                    else printf("%s║      ║\033[0m ", fond);
+                }
+
+                if (nbr_joueur == 4 || (nbr_joueur == 3 && ligne == 0)) {
+                    printf("      ");
+                    for (int c = 0; c < nbr_carte; c++) {
+                        const char *fond = "\033[100m";
+                        if (j[joueur_droite].cartes[c].visible) {
+                            fond = couleur_carte(j[joueur_droite].cartes[c].valeur);
+                        }
+
+                        if (ligne_carte == 0) printf("%s╔══════╗\033[0m ", fond);
+                        else if (ligne_carte == 1 || ligne_carte == 5) printf("%s║      ║\033[0m ", fond);
+                        else if (ligne_carte == 3) {
+                            if (j[joueur_droite].cartes[c].visible)
+                                printf("%s║ %4d ║\033[0m ", fond, j[joueur_droite].cartes[c].valeur);
+                            else
+                                printf("%s║ CARD ║\033[0m ", fond);
+                        } else if (ligne_carte == 6) printf("%s╚══════╝\033[0m ", fond);
+                        else printf("%s║      ║\033[0m ", fond);
+                    }
+                }
+                printf("\n");
+            }
+
+            for (int c = 0; c < nbr_carte; c++) printf("   (%d)   ", c + 1);
+            if (nbr_joueur == 4 || (nbr_joueur == 3 && ligne == 0)) {
+                printf("      ");
+                for (int c = 0; c < nbr_carte; c++) printf("   (%d)   ", c + 1);
+            }
+            printf("\n");
+
+            int valG;
+            if (j[joueur_gauche].id_defausse != -1) {
+                valG = j[joueur_gauche].defausse[j[joueur_gauche].id_defausse];
+            } else {
+                valG = -999;
+            }
+            int valD = -999;
+
+            if ((nbr_joueur == 4 || (nbr_joueur == 3 && ligne == 0)) && j[joueur_droite].id_defausse != -1) {
+                valD = j[joueur_droite].defausse[j[joueur_droite].id_defausse];
+            }
+
+            for (int l = 0; l < 5; l++) {
+                if (valG == -999) {
+                    if (l == 2) printf("Défausse: (vide)");
+                    else printf("               ");
+                } else {
+                    const char *fond = couleur_carte(valG);
+                    if (l == 0) printf("Défausse: %2s╔══════╗\033[0m", fond);
+                    else if (l == 1 || l == 3) printf("          %s║      ║\033[0m", fond);
+                    else if (l == 2) printf("          %s║ %2d   ║\033[0m", fond, valG);
+                    else if (l == 4) printf("          %s╚══════╝\033[0m", fond);
+                }
+
+                if (valD != -999) {
+                    int decal = (nbr_carte * 9) + 10;
+                    for (int i = 0; i < decal; i++) printf(" ");
+                    const char *fond = couleur_carte(valD);
+                    if (l == 0) printf("Défausse: %s╔══════╗\033[0m", fond);
+                    else if (l == 1 || l == 3) printf("          %s║      ║\033[0m", fond);
+                    else if (l == 2) printf("          %s║ %2d   ║\033[0m", fond, valD);
+                    else if (l == 4) printf("          %s╚══════╝\033[0m", fond);
+                } else if (nbr_joueur == 4 || (nbr_joueur == 3 && ligne == 0)) {
+                    if (l == 2) {
+                        int decal = (nbr_carte * 9) + 10;
+                        for (int i = 0; i < decal; i++) printf(" ");
+                        printf("Défausse: (vide)");
+                    }
+                }
+
+                printf("\n");
+            }
+            printf("\n");
+        }
 }
 
 void afficher_carte_horizontal(Joueur *j, int nbr_c){
