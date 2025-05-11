@@ -49,7 +49,8 @@ Le jeu se termine quand un joueur a toutes ses cartes visibles (face retournée)
     - Si vous sauvegardez la partie cela vous retournera au menu principal.
 
     - En choisissant "Charger", vous pourrez reprendre la partie sauvegardée 
-      à partir de là où vous en étiez.
+      à partir de là où vous en étiez.  
 
+*Conseil : Pour une meilleure expérience de jeu, pensez à dézoomer votre terminal et le passer en plein écran avant de lancer la partie.*
 
 
