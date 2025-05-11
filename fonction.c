@@ -267,7 +267,9 @@ void distrib_joueurs(Joueur *j, Pioche *p, int nbr_carte, int nbr_joueur){
     // Message de confirmation
     printf("\033[1;32m\u2705 Cartes distribuées avec succès à tous les joueurs.\033[0m\n");
     printf("\033[1;34mAppuyez sur Entrée pour continuer...\033[0m");
-    while (getchar() != '\n');
+    int ch;
+    while ((ch = getchar()) != '\n' && ch != EOF); // Vider le buffer avant d’attendre le vrai appui sur Entrée
+    getchar();
 
     system("clear || cls");
     printf("\033[1;35m╔════════════════════════════════╗\033[0m\n");
