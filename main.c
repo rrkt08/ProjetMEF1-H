@@ -7,20 +7,21 @@ int main() {
     Pioche *pioche = NULL;
     int nbr_j = 0;
     int nbr_c = 0;
+    int i = 0;
 
     while (1) {
         int menu_result = afficher_menu();  // 1 = jouer, 2 = charger, 3 = quitter
 
         if (menu_result == 2) {
             if (!sauvegarde_existe()) {
-                printf("\033[1;31mAucune sauvegarde valide trouvée. Retour au menu.\033[0m\n");
-                printf("Appuyez sur Entrée pour continuer...");
+                printf("\033[1;31mAucune sauvegarde trouvée...\033[0m\n");
+                printf("Appuyez sur [Entrée] pour retourner au menu...");
                 while(getchar() != '\n'); // Vider le buffer si nécessaire
                 getchar(); // Attendre l'entrée de l'utilisateur
                 continue;
             }
                     
-            charger_partie(&joueur, &nbr_j, &nbr_c, &pioche);
+            charger_partie(&joueur, &nbr_j, &nbr_c, &pioche, &i);
             if (joueur == NULL) {
                 continue;
             }
@@ -39,13 +40,16 @@ int main() {
 
         int partie_terminee = 0;
         while (!partie_terminee) {
-            for (int i = 0; i < nbr_j; i++) {
-                printf("\n=== Tour de %s ===\n\n", joueur[i].nom);
+                system("clear || cls");
+                printf("\033[1;35m╔════════════════════════════════╗\033[0m\n");
+                printf("\033[1;35m           TOUR DE %s            \033[0m\n",joueur[i].nom);
+                printf("\033[1;35m╚════════════════════════════════╝\033[0m");
                 afficher_jeu(joueur, nbr_c, nbr_j);
 
                 int choix_valide = 0;
                 int choix1;
 
+                printf("\033[1;35mAu tour de %s : \033[0m",joueur[i].nom);
                 while (!choix_valide) {
                     printf("1. Piocher | 2. Prendre une défausse : ");
                     if (scanf("%d", &choix1) != 1 || (choix1 != 1 && choix1 != 2)) {
@@ -64,7 +68,7 @@ int main() {
                         }
 
                         if (choix_joueur - 1 == i) {
-                            printf("\033[1;31mErreur: Vous ne pouvez pas prendre dans votre propre défausse!\033[0m\n");
+                            printf("\033[1;31mErreur! Vous ne pouvez pas prendre dans votre propre défausse!\033[0m\n");
                             continue;
                         }
 
@@ -78,7 +82,7 @@ int main() {
 
                     } else if (choix1 == 1) {
                         int carte_piochee = piocherCarte(pioche);
-                        printf("\nCarte piochée : %d\n", carte_piochee);
+                        printf("\nCarte piochée : \033[1;33m%d\033[00m\n", carte_piochee);
 
                         int choix2;
                         printf("1. Echanger avec une carte | 2. Mettre dans la défausse : ");
@@ -100,18 +104,19 @@ int main() {
                 }
 
                 if (verifJoueurAtermine(joueur, nbr_c, i)) {
-                    printf("Le Joueur %s a terminé !\n", joueur[i].nom);
+                    printf("\033[1;32mLe Joueur %s a terminé !\n\033[0m", joueur[i].nom);
                     exit(92);
                 }
+
+                i = (i + 1) % nbr_j;
 
                 // Sauvegarde
                 char save;
                 printf("\n\033[1;33mSouhaitez-vous sauvegarder la partie ? (o/n) : \033[0m");
                 scanf(" %c", &save);
                 if (save == 'o' || save == 'O') {
-                    sauvegarder_partie(joueur, nbr_j, nbr_c, pioche);
+                    sauvegarder_partie(joueur, nbr_j, nbr_c, pioche, i);
                 }
-            }
         }
 
         free(joueur);

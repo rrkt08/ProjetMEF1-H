@@ -6,7 +6,7 @@
 int card_user(){
     int a;
     printf("\033[1;36m╔════════════════════════════════════════════════╗\033[0m\n");
-    printf("\033[1;36m║  \U0001F0CF  CHOIX DU NOMBRE DE CARTES                 ║\033[0m\n");
+    printf("\033[1;36m║          \U0001F0CF CHOIX DU NOMBRE DE CARTES          ║\033[0m\n");
     printf("\033[1;36m╚════════════════════════════════════════════════╝\033[0m\n\n");
 
     printf("\u27A1 Combien de cartes ? (entre \033[1;33m3\033[0m et \033[1;33m10\033[0m)\n> ");
@@ -22,7 +22,7 @@ int card_user(){
 int nbr_user(){
     int a;
     printf("\033[1;36m╔═════════════════════════════════════════╗\033[0m\n");
-    printf("\033[1;36m║  \U0001F46B  NOMBRE DE JOUEURS À DÉFINIR        ║\033[0m\n");
+    printf("\033[1;36m║    \U0001F46B  NOMBRE DE JOUEURS À DÉFINIR      ║\033[0m\n");
     printf("\033[1;36m╚═════════════════════════════════════════╝\033[0m\n\n");
 
     printf("\u27A1  Combien de joueurs ? (entre \033[1;33m2\033[0m et \033[1;33m4\033[0m)\n> ");
@@ -43,7 +43,7 @@ void crea_joueurs(Joueur *j, int n){
     system("clear || cls"); // nettoie le terminal
 
     printf("\033[1;36m╔══════════════════════════════════╗\033[0m\n");
-    printf("\033[1;36m║  \U0001F3AE  CRÉATION DES JOUEURS        ║\033[0m\n");
+    printf("\033[1;36m║   \U0001F3AE  CRÉATION DES JOUEURS       ║\033[0m\n");
     printf("\033[1;36m╚══════════════════════════════════╝\033[0m\n\n");
 
     for (int i = 0; i < n; i++) {
@@ -97,7 +97,7 @@ int afficher_menu() {
                 } 
                 if (choix == 1) return 2; //charge une partie sauvegardée
                 if (choix == 2) {
-                    printf("\033[1;31mBye Bye 👋\n\033[0m");
+                    printf("\033[1;31mBye Bye \U0001F44B\033[0m\n\n");
                     exit(40); //Quitte le jeu
                 }
                 break;
@@ -124,7 +124,7 @@ int sauvegarde_existe(){
     return 1; // au moins un élément lisible → sauvegarde considérée valide
 }
 
-void sauvegarder_partie(Joueur *j, int nbr_joueur, int nbr_carte, Pioche *p) {
+void sauvegarder_partie(Joueur *j, int nbr_joueur, int nbr_carte, Pioche *p, int i_joueur) {
     if((j==NULL)||(p==NULL)){
         printf("Erreur mémoire");
         exit(16);
@@ -132,10 +132,10 @@ void sauvegarder_partie(Joueur *j, int nbr_joueur, int nbr_carte, Pioche *p) {
     FILE *f = fopen("sauvegarde.txt", "w");
     if (!f) {
         printf("\033[1;31mErreur ouverture du fichier de sauvegarde !\033[0m\n");
-        return;
+        exit(63);
     }
 
-    fprintf(f, "%d %d\n", nbr_joueur, nbr_carte);
+    fprintf(f, "%d %d %d\n", nbr_joueur, nbr_carte, i_joueur);
 
     for (int i = 0; i < nbr_joueur; i++) {
         fprintf(f, "%s %d\n", j[i].nom, j[i].id_defausse);
@@ -157,24 +157,23 @@ void sauvegarder_partie(Joueur *j, int nbr_joueur, int nbr_carte, Pioche *p) {
     exit(39);
 }
 
-void charger_partie(Joueur **j, int *nbr_joueur, int *nbr_carte, Pioche **p) {
-    if((*j==NULL)||(*p==NULL)||(nbr_joueur==NULL)||(nbr_carte==NULL)){
-        printf("Erreur mémoire");
-        exit(18);
-    }
+void charger_partie(Joueur **j, int *nbr_joueur, int *nbr_carte, Pioche **p, int *i_joueur) {
     FILE *f = fopen("sauvegarde.txt", "r");
     if (!f) {
-        printf("\033[1;31mAucune sauvegarde trouvée !\033[0m\n");
-        printf("\033[1;34mAppuyez sur Entrée pour revenir au menu...\033[0m");
-        while (getchar() != '\n'); // Vide le buffer
-        getchar(); // Attend l'appui sur Entrée
-        system("clear || cls");
+        printf("Erreur ouverture du fichier sauvegarde\n");
+        exit(64);
     }
 
-    fscanf(f, "%d %d\n", nbr_joueur, nbr_carte);
+    fscanf(f, "%d %d %d\n", nbr_joueur, nbr_carte, i_joueur);
 
     *j = malloc(sizeof(Joueur) * (*nbr_joueur));
     *p = malloc(sizeof(Pioche));
+
+    if((*j == NULL)||(*p == NULL)) {
+        printf("\033[1;31mErreur mémoire !\033[0m\n");
+        fclose(f);
+        exit(18);
+    }
 
     for (int i = 0; i < *nbr_joueur; i++) {
         fscanf(f, "%s %d\n", (*j)[i].nom, &(*j)[i].id_defausse);
@@ -273,7 +272,7 @@ void distrib_joueurs(Joueur *j, Pioche *p, int nbr_carte, int nbr_joueur){
 
     system("clear || cls");
     printf("\033[1;35m╔════════════════════════════════╗\033[0m\n");
-    printf("\033[1;35m║  \U0001F6A8  LE JEU PEUT COMMENCER !    ║\033[0m\n");
+    printf("\033[1;35m║  \U0001F6A8  LE JEU PEUT COMMENCER !   ║\033[0m\n");
     printf("\033[1;35m╚════════════════════════════════╝\033[0m\n");
     printf("\n\033[1;34mAppuyez sur Entrée pour afficher le plateau...\033[0m");
     while (getchar() != '\n');
@@ -313,10 +312,10 @@ void echange_defausse(Joueur *j1, Joueur *j2, int nbr_carte) {
     }
     // 1. Afficher la carte disponible dans la défausse
     int carte_defausse = j2->defausse[j2->id_defausse];
-    printf("Carte disponible dans la défausse : %d\n", carte_defausse);
+    printf("Carte disponible dans la défausse : \033[1;33m%d\033[00m\n", carte_defausse);
 
     // 2. Demander quelle carte échanger
-    printf("%s, choisissez la carte à échanger (1-%d) : ", j1->nom, nbr_carte);
+    printf("Choisissez la carte à échanger (1-%d) : ", nbr_carte);
     int choix;
     while(scanf("%d", &choix) != 1 || choix < 1 || choix > nbr_carte) {
         printf("\033[1;31mErreur!\033[0m Choisissez entre 1 et %d.\n", nbr_carte);
@@ -335,7 +334,7 @@ void echange_defausse(Joueur *j1, Joueur *j2, int nbr_carte) {
     // 5. Retirer la carte de la défausse adverse
     prendre_defausse(j2);
 
-    printf("Échange effectué !\n");
+    printf("\033[1;32mÉchange effectué \U00002705\033[0m\n");
 }
 
 //Affichage du tour avec les différentes informations sur les cartes et la défausse de chaque joueur
@@ -360,14 +359,30 @@ void afficher_jeu(Joueur *j, int nbr_carte, int nbr_joueur) {
             const char *fond;
             int val = j[i].defausse[j[i].id_defausse];
             
-            if (val <= -2)       fond = "\033[41m";  // Rouge
-            else if (val == -1)  fond = "\033[45m";  // Magenta
-            else if (val == 0)   fond = "\033[105m"; // Violet clair
-            else if (val <= 3)   fond = "\033[43m";  // Jaune
-            else if (val <= 6)   fond = "\033[42m";  // Vert
-            else if (val <= 9)   fond = "\033[46m";  // Cyan
-            else if (val <= 12)  fond = "\033[44m";  // Bleu
-            else                 fond = "\033[47m";  // Blanc
+            if (val <= -2){
+                fond = "\033[41m";  // Rouge
+            }
+            else if (val == -1){
+                fond = "\033[45m";  // Magenta
+            }  
+            else if (val == 0){
+                fond = "\033[105m"; // Violet clair
+            }   
+            else if (val <= 3){
+                fond = "\033[43m";  // Jaune
+            }   
+            else if (val <= 6){
+                fond = "\033[42m";  // Vert
+            }   
+            else if (val <= 9){
+                fond = "\033[46m";  // Cyan
+            }   
+            else if (val <= 12){
+                fond = "\033[44m";  // Bleu
+            }  
+            else{
+                fond = "\033[47m";  // Blanc
+            }                 
             
             printf("\n"); // Nouvelle ligne pour bien aligner la carte de défausse
             printf("%s╔══════╗\033[0m\n", fond);
@@ -391,7 +406,6 @@ void afficher_carte_horizontal(Joueur *j, int nbr_c){
         for (int c = 0; c < nbr_c; c++) {    // Pour chaque carte
             // Déterminer la couleur de fond
             const char *fond = "\033[100m"; // Gris pour carte cachée par défaut
-            const char *texte = "\033[97m"; // Texte blanc
             
             if (j->cartes[c].visible) {
                 // Choisir la couleur en fonction de la valeur
@@ -456,7 +470,7 @@ void echange_pioche(Joueur *j, int i_joueur, int nbr_carte, int carte_choisit){
     j[i_joueur].cartes[x-1].visible = 1;
     ajouter_defausse(&j[i_joueur], temp); // Ajoute à la défausse du joueur
     
-    printf("Carte échangée, l'ancienne carte va dans la défausse...\n\n");
+    printf("\033[1;32mCarte échangée \U00002705\033[0m l'ancienne carte va dans la défausse...\n");
 }
     
 int verifJoueurAtermine(Joueur *j, int nbr_carte, int i_joueur){
