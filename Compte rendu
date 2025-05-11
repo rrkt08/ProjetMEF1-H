@@ -1,0 +1,40 @@
+Projet CardYard MEF1-H : 
+Compte rendu
+
+
+
+Pour ce projet d’informatique du semestre 2 d’informatique, nous avons choisis le sujet du jeu de cartes, CardYard. 
+
+1 - Organisation du travail
+ La première semaine nous avons planifier et mis en place un planning de travail pour répartir les tâches de manière équilibrée et efficace. Pour travailler nous avons utilisé un groupe sur Discord dédié à notre projet. Nous y étions en appels régulièrement en partage d’écran pour résoudre ensemble les problèmes rencontrés et s’expliquer nos avancée. Nous pouvions également partagé instantanément les fichiers et les morceaux de code via Discord. Nous avons répartition des tâches en fonction des compétences et disponibilités de chacun. Tout cela nous a permis de gagner du temps, de mieux comprendre les blocages rencontrés et d’assurer une cohérence global dans le développement du projet.
+
+
+2 - Avancement hebdomadaire
+Semaine 1 : nous avons développer l’interface et l’affichage complet du menu principal du jeu et première étape de l’interface utilisateur.
+
+Semaine 2 : Mécanique de distribution
+Codage de la fonction de distribution des cartes à chaque joueur.
+Premiers tests fonctionnels pour valider la logique de répartition des cartes.
+
+Semaine 3 : Début de la mécanique de jeu
+Implémentation du début des tours de jeu.
+Codage de l’affichage des cartes des joueurs.
+Mise en place de l’affichage de la pile de défausse, avec gestion de sa position dans l’interface.
+
+Semaine 4 : Finalisation du jeu
+Finalisation complète des tours de jeu avec toutes les conditions associées.
+Création d’une boucle permettant de détecter la fin de partie.
+Affichage du vainqueur en fin de partie.
+Ajout d’un système de sauvegarde et de chargement de la partie.
+Amélioration de l’interface générale et du rendu visuel des cartes.
+
+Difficultés rencontrées
+Au fil des semaines, nous avons été confrontés à plusieurs obstacles techniques et organisationnels :
+Problèmes liés au Makefile : en début de projet, la configuration du Makefile s’est révélée plus complexe que prévu.
+Compatibilité Mac/Windows : un membre de l’équipe travaillant sous MacOS rencontrait des erreurs et des avertissements à la compilation, alors que le programme fonctionnait correctement sur les deux autres machines Windows (via terminal Ubuntu). Cela a nécessité des ajustements spécifiques.
+Affichage graphique des cartes : représenter visuellement les cartes dans le terminal a représenté un véritable défi technique.
+Positionnement de la défausse : placer correctement la pile de défausse sur le plateau, de manière cohérente et lisible, a nécessité plusieurs itérations.
+
+
+Conclusion
+Malgré une charge de travail importante due à la concurrence avec d’autres matières, nous avons su mener à bien ce projet de développement d’un jeu de cartes en langage C. Chaque membre du groupe a activement participé, et les difficultés techniques rencontrées ont été surmontées grâce à notre bonne communication et à une organisation rigoureuse.
