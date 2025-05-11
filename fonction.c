@@ -63,7 +63,7 @@ void crea_joueurs(Joueur *j, int n){
     getchar();
 }
 
-int Menu() {
+int afficher_menu() {
     const char *options[] = {"Jouer", "Charger", "Quitter"};
     int choix = 0;
     char input; // saisit de l'utilisateur
@@ -109,6 +109,7 @@ int Menu() {
 int sauvegarde_existe(){
     FILE *f = fopen("sauvegarde.txt", "r");
     if (f == NULL) {
+        printf("Erreur fichier introuvable\n");
         return 0;
     }
 
@@ -124,6 +125,10 @@ int sauvegarde_existe(){
 }
 
 void sauvegarder_partie(Joueur *j, int nbr_joueur, int nbr_carte, Pioche *p) {
+    if((j==NULL)||(p==NULL)){
+        printf("Erreur mémoire");
+        exit(16);
+    }
     FILE *f = fopen("sauvegarde.txt", "w");
     if (!f) {
         printf("\033[1;31mErreur ouverture du fichier de sauvegarde !\033[0m\n");
@@ -153,6 +158,10 @@ void sauvegarder_partie(Joueur *j, int nbr_joueur, int nbr_carte, Pioche *p) {
 }
 
 void charger_partie(Joueur **j, int *nbr_joueur, int *nbr_carte, Pioche **p) {
+    if((*j==NULL)||(*p==NULL)||(nbr_joueur==NULL)||(nbr_carte==NULL)){
+        printf("Erreur mémoire");
+        exit(18);
+    }
     FILE *f = fopen("sauvegarde.txt", "r");
     if (!f) {
         printf("\033[1;31mAucune sauvegarde trouvée !\033[0m\n");
@@ -258,17 +267,21 @@ void distrib_joueurs(Joueur *j, Pioche *p, int nbr_carte, int nbr_joueur){
     // Message de confirmation
     printf("\033[1;32m\u2705 Cartes distribuées avec succès à tous les joueurs.\033[0m\n");
     printf("\033[1;34mAppuyez sur Entrée pour continuer...\033[0m");
-    getchar();
+    while (getchar() != '\n');
 
     system("clear || cls");
     printf("\033[1;35m╔════════════════════════════════╗\033[0m\n");
-    printf("\033[1;35m║  \U0001F6A8  LE JEU PEUT COMMENCER !        ║\033[0m\n");
+    printf("\033[1;35m║  \U0001F6A8  LE JEU PEUT COMMENCER !    ║\033[0m\n");
     printf("\033[1;35m╚════════════════════════════════╝\033[0m\n");
     printf("\n\033[1;34mAppuyez sur Entrée pour afficher le plateau...\033[0m");
-    getchar();
+    while (getchar() != '\n');
 }
 
-void ajouter_defausse(Joueur *j, int valeur) {
+void ajouter_defausse(Joueur *j, int valeur){
+    if(j==NULL){
+        printf("Erreur mémoire");
+        exit(15);
+    }
     if (j->id_defausse < MAX_CARTES - 1) {
         j->id_defausse++;
         j->defausse[j->id_defausse] = valeur; // Ajoute à la fin
@@ -292,7 +305,10 @@ int prendre_defausse(Joueur *j){
 }
 
 void echange_defausse(Joueur *j1, Joueur *j2, int nbr_carte) {
-    
+    if((j1==NULL)||(j2==NULL)){
+        printf("Erreur mémoire");
+        exit(35);
+    }
     // 1. Afficher la carte disponible dans la défausse
     int carte_defausse = j2->defausse[j2->id_defausse];
     printf("Carte disponible dans la défausse : %d\n", carte_defausse);
@@ -354,7 +370,7 @@ void afficher_jeu(Joueur *j, int nbr_carte, int nbr_joueur) {
             printf("\n"); // Nouvelle ligne pour bien aligner la carte de défausse
             printf("%s╔══════╗\033[0m\n", fond);
             printf("%s║      ║\033[0m\n", fond);
-            printf("%s║ %d    ║\033[0m\n", fond, val);
+            printf("%s║ %2d   ║\033[0m\n", fond, val);
             printf("%s║      ║\033[0m\n", fond);
             printf("%s╚══════╝\033[0m\n", fond);
         }
@@ -363,7 +379,11 @@ void afficher_jeu(Joueur *j, int nbr_carte, int nbr_joueur) {
     }
 }
 
-void afficher_carte_horizontal(Joueur *j, int nbr_c) {
+void afficher_carte_horizontal(Joueur *j, int nbr_c){
+    if((j==NULL)){
+        printf("Erreur mémoire");
+        exit(65);
+    }
     // Afficher les cartes du joueur
     for (int ligne = 0; ligne < 7; ligne++) { // Hauteur d'une carte
         for (int c = 0; c < nbr_c; c++) {    // Pour chaque carte

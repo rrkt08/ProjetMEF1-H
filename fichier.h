@@ -22,7 +22,7 @@ typedef struct{
 int card_user();
 int nbr_user();
 void crea_joueurs(Joueur *j, int n);
-int Menu();
+int afficher_menu();
 void initialiserPioche(Pioche *pioche);
 void melangerPioche(Pioche *pioche);
 int piocherCarte(Pioche *pioche);

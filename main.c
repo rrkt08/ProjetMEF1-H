@@ -9,7 +9,7 @@ int main() {
     int nbr_c = 0;
 
     while (1) {
-        int menu_result = Menu();  // 1 = jouer, 2 = charger, 3 = quitter
+        int menu_result = afficher_menu();  // 1 = jouer, 2 = charger, 3 = quitter
 
         if (menu_result == 2) {
             if (!sauvegarde_existe()) {
