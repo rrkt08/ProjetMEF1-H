@@ -37,3 +37,4 @@ void sauvegarder_partie(Joueur *j, int nbr_joueur, int nbr_carte, Pioche *p, int
 void charger_partie(Joueur **j, int *nbr_joueur, int *nbr_carte, Pioche **p, int *i_joueur);
 int sauvegarde_existe(); 
 void afficher_carte_horizontal(Joueur *j, int nbr_c);
+void afficher_scores_finaux(Joueur *joueurs, int nbr_joueurs, int nbr_cartes);

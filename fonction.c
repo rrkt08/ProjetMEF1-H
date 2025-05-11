@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 #include "fichier.h"
 
@@ -47,10 +48,15 @@ void crea_joueurs(Joueur *j, int n){
     printf("\033[1;36m╚══════════════════════════════════╝\033[0m\n\n");
 
     for (int i = 0; i < n; i++) {
-        printf("\033[1;33m\U0001F9D1  Nom du joueur %d : \033[0m", i + 1);
-        scanf("%s", j[i].nom);
-        printf("\033[1;32m\U00002705  Bienvenue, %s !\n\n\033[0m", j[i].nom);
+        do {
+            printf("\033[1;33m\U0001F9D1  Nom du joueur %d : \033[0m", i + 1);
+            scanf("%29s", j[i].nom); // affiche 29 caractères
 
+            if (strlen(j[i].nom) > 10) {
+                printf("\033[1;31m Le nom ne doit pas dépasser 10 caractères\033[0m\n");
+            }
+        } while(strlen(j[i].nom) > 10);
+        printf("\033[1;32m\U00002705  Bienvenue, %s !\n\n\033[0m", j[i].nom);
         j[i].id_defausse = -1; // Pour plus tard, on choisit une valeur et il y'aura une condition pour que sa affiche que la défausse est vide
     }
 
@@ -237,7 +243,6 @@ void melangerPioche(Pioche *pioche){
     }
 }
 
-// Pioche une carte 
 int piocherCarte(Pioche *pioche){
     if(pioche==NULL){
         printf("Erreur mémoire");
@@ -248,7 +253,7 @@ int piocherCarte(Pioche *pioche){
         return -1;
     }
     pioche->nbr_cartes--;
-    return pioche->cartes[pioche->nbr_cartes].valeur; // carte piocher
+    return pioche->cartes[pioche->nbr_cartes].valeur; // carte piochée
 }
 
 void distrib_joueurs(Joueur *j, Pioche *p, int nbr_carte, int nbr_joueur){
@@ -263,19 +268,18 @@ void distrib_joueurs(Joueur *j, Pioche *p, int nbr_carte, int nbr_joueur){
         }    
     }
 
-    // Message de confirmation
     printf("\033[1;32m\u2705 Cartes distribuées avec succès à tous les joueurs.\033[0m\n");
-    printf("\033[1;34mAppuyez sur Entrée pour continuer...\033[0m");
-    int ch;
-    while ((ch = getchar()) != '\n' && ch != EOF); // Vider le buffer avant d’attendre le vrai appui sur Entrée
+    printf("\033[1;34mAppuyez sur [Entrée] pour continuer...\033[0m");
+    while (getchar() != '\n');
     getchar();
 
     system("clear || cls");
     printf("\033[1;35m╔════════════════════════════════╗\033[0m\n");
     printf("\033[1;35m║  \U0001F6A8  LE JEU PEUT COMMENCER !   ║\033[0m\n");
     printf("\033[1;35m╚════════════════════════════════╝\033[0m\n");
-    printf("\n\033[1;34mAppuyez sur Entrée pour afficher le plateau...\033[0m");
+    printf("\n\033[1;34mAppuyez sur [Entrée] pour afficher le plateau...\033[0m");
     while (getchar() != '\n');
+    getchar();
 }
 
 void ajouter_defausse(Joueur *j, int valeur){
@@ -310,11 +314,9 @@ void echange_defausse(Joueur *j1, Joueur *j2, int nbr_carte) {
         printf("Erreur mémoire");
         exit(35);
     }
-    // 1. Afficher la carte disponible dans la défausse
     int carte_defausse = j2->defausse[j2->id_defausse];
     printf("Carte disponible dans la défausse : \033[1;33m%d\033[00m\n", carte_defausse);
 
-    // 2. Demander quelle carte échanger
     printf("Choisissez la carte à échanger (1-%d) : ", nbr_carte);
     int choix;
     while(scanf("%d", &choix) != 1 || choix < 1 || choix > nbr_carte) {
@@ -323,21 +325,18 @@ void echange_defausse(Joueur *j1, Joueur *j2, int nbr_carte) {
         printf("Choisissez la carte à échanger (1-%d) : ", nbr_carte);
     }
 
-    // 3. Effectuer l'échange
+
     int ancienne_carte = j1->cartes[choix-1].valeur;
     j1->cartes[choix-1].valeur = carte_defausse;
     j1->cartes[choix-1].visible = 1;
 
-    // 4. Mettre l'ancienne carte dans la défausse du joueur actuel
     ajouter_defausse(j1, ancienne_carte);
 
-    // 5. Retirer la carte de la défausse adverse
     prendre_defausse(j2);
 
     printf("\033[1;32mÉchange effectué \U00002705\033[0m\n");
 }
 
-//Affichage du tour avec les différentes informations sur les cartes et la défausse de chaque joueur
 void afficher_jeu(Joueur *j, int nbr_carte, int nbr_joueur) {
     if(j == NULL) {
         printf("Erreur mémoire");
@@ -347,15 +346,12 @@ void afficher_jeu(Joueur *j, int nbr_carte, int nbr_joueur) {
     for(int i = 0; i < nbr_joueur; i++) {
         printf("\n\033[1;35m=== Joueur %s ===\033[0m\n", j[i].nom);
         
-        // Afficher les cartes du joueur
         afficher_carte_horizontal(&j[i], nbr_carte);
         
-        // Afficher la défausse avec un meilleur alignement
         printf("\nDéfausse: ");
         if(j[i].id_defausse == -1) {
             printf("(vide)\n");
         } else {
-            // Afficher la dernière carte de la défausse
             const char *fond;
             int val = j[i].defausse[j[i].id_defausse];
             
@@ -401,25 +397,37 @@ void afficher_carte_horizontal(Joueur *j, int nbr_c){
         printf("Erreur mémoire");
         exit(65);
     }
-    // Afficher les cartes du joueur
     for (int ligne = 0; ligne < 7; ligne++) { // Hauteur d'une carte
         for (int c = 0; c < nbr_c; c++) {    // Pour chaque carte
-            // Déterminer la couleur de fond
             const char *fond = "\033[100m"; // Gris pour carte cachée par défaut
             
             if (j->cartes[c].visible) {
-                // Choisir la couleur en fonction de la valeur
-                if (j->cartes[c].valeur <= -2)       fond = "\033[41m";  // Rouge
-                else if (j->cartes[c].valeur == -1)  fond = "\033[45m";  // Magenta
-                else if (j->cartes[c].valeur == 0)   fond = "\033[105m"; // Violet clair
-                else if (j->cartes[c].valeur <= 3)   fond = "\033[43m";  // Jaune
-                else if (j->cartes[c].valeur <= 6)   fond = "\033[42m";  // Vert
-                else if (j->cartes[c].valeur <= 9)   fond = "\033[46m";  // Cyan
-                else if (j->cartes[c].valeur <= 12)  fond = "\033[44m";  // Bleu
-                else                                 fond = "\033[47m";  // Blanc
+                if (j->cartes[c].valeur <= -2){
+                    fond = "\033[41m";  // Rouge
+                }       
+                else if (j->cartes[c].valeur == -1){
+                    fond = "\033[45m";  // Magenta
+                }  
+                else if (j->cartes[c].valeur == 0){
+                    fond = "\033[105m"; // Violet clair
+                }   
+                else if (j->cartes[c].valeur <= 3){
+                    fond = "\033[43m";  // Jaune
+                }   
+                else if (j->cartes[c].valeur <= 6){
+                    fond = "\033[42m";  // Vert
+                }   
+                else if (j->cartes[c].valeur <= 9){
+                    fond = "\033[46m";  // Cyan
+                }   
+                else if (j->cartes[c].valeur <= 12){
+                    fond = "\033[44m";  // Bleu
+                }  
+                else{
+                    fond = "\033[47m";  // Blanc
+                }                                 
             }
-            
-            // Dessiner les différentes lignes de la carte
+        
             if (ligne == 0) {
                 printf("%s╔══════╗\033[0m ", fond);
             } 
@@ -428,8 +436,7 @@ void afficher_carte_horizontal(Joueur *j, int nbr_c){
             } 
             else if (ligne == 3) { // Ligne centrale avec la valeur
                 if (j->cartes[c].visible) {
-                    // Afficher la valeur centrée
-                    printf("%s║ %4d ║\033[0m ", fond, j->cartes[c].valeur);
+                    printf("%s║ %4d ║\033[0m ", fond, j->cartes[c].valeur); // 4 caractères pour un meilleur affichage
                 } else {
                     printf("%s║ CARD ║\033[0m ", fond);
                 }
@@ -444,9 +451,8 @@ void afficher_carte_horizontal(Joueur *j, int nbr_c){
         printf("\n");
     }
     
-    // Afficher les numéros des cartes en dessous
     for (int c = 0; c < nbr_c; c++) {
-        printf("   (%d)   ", c+1);
+        printf("   (%d)   ", c+1); // numéro de la carte
     }
     printf("\n");
 }
@@ -484,4 +490,45 @@ int verifJoueurAtermine(Joueur *j, int nbr_carte, int i_joueur){
         } 
     }
     return 1;
+}
+
+void afficher_scores_finaux(Joueur *joueurs, int nbr_joueurs, int nbr_cartes) {
+    int scores[nbr_joueurs];
+    int indices[nbr_joueurs];
+    
+    for (int i = 0; i < nbr_joueurs; i++) {
+        scores[i] = 0;
+        indices[i] = i;
+        for (int c = 0; c < nbr_cartes; c++) {
+            scores[i] += joueurs[i].cartes[c].valeur;
+        }
+    }
+
+    for (int i = 0; i < nbr_joueurs-1; i++) { // Tri à bulles 
+        for (int j = 0; j < nbr_joueurs-i-1; j++) {
+            if (scores[j] > scores[j+1]) {
+                int temp = scores[j];
+                scores[j] = scores[j+1];
+                scores[j+1] = temp;
+                
+                // Échange indices
+                temp = indices[j];
+                indices[j] = indices[j+1];
+                indices[j+1] = temp;
+            }
+        }
+    }
+
+    printf("\n\033[1;35m=== CLASSEMENT FINAL ===\033[0m\n");
+    for (int i = 0; i < nbr_joueurs; i++) {
+        int idx = indices[i];
+        
+        if (i == 0) {
+            printf("\033[1;32m");  // Vert
+        } else {
+            printf("\033[1;33m");  // Jaune
+        }
+        
+        printf("%d. %s : %d points\033[0m\n", i+1, joueurs[idx].nom, scores[i]);
+    }
 }
