@@ -41,9 +41,15 @@ Les joueurs jouent chacun leur tour et à chaque tour, vous pouvez :
 
 Le jeu se termine quand un joueur a toutes ses cartes visibles (face retournée).
 
-Sauvegarde :
+#### Sauvegarde :
 
-    À la fin de chaque tour, vous pouvez choisir de sauvegarder la partie 
-    ou non.
+    - À la fin de chaque tour, vous aurez le choix de sauvegarder la partie 
+      ou non.
+
+    - Si vous sauvegardez la partie cela vous retournera au menu principal.
+
+    - En choisissant "Charger", vous pourrez reprendre la partie sauvegardée 
+      à partir de là où vous en étiez.
+
 
 
