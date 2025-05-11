@@ -81,8 +81,15 @@ int main() {
                         choix_valide = 1;
 
                     } else if (choix1 == 1) {
-                        int carte_piochee = piocherCarte(pioche);
-                        printf("\nCarte piochée : \033[1;33m%d\033[00m\n", carte_piochee);
+                        int carte_piochee;
+                        if(pioche->nbr_cartes > 0){
+                            carte_piochee = piocherCarte(pioche);
+                            printf("\nCarte piochée : \033[1;33m%d\033[00m\n", carte_piochee);
+                        } 
+                        else{
+                            printf("\033[1;33mLa pioche est vide ! Vous devez prendre une carte dans une défausse.\033[0m\n");
+                            continue;  // Retourne au début du tour pour forcer le choix 2
+                        }
 
                         int choix2;
                         printf("1. Echanger avec une carte | 2. Mettre dans la défausse : ");

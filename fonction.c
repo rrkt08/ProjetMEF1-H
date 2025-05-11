@@ -83,7 +83,7 @@ int afficher_menu() {
                 printf("  %s\n", options[i]);
         }
 
-        printf("\n\033[1;36mNavigation:\033[0m [z]Haut [s]Bas\n[ENTREE]Valider\n"); //guide
+        printf("\n\033[1;36mNavigation:\033[0m [z]Haut [s]Bas\npuis [ENTREE]Valider\n"); //guide
 
         input = getchar(); // saisit "z" ou "s" ou "entree"
 
@@ -245,7 +245,7 @@ int piocherCarte(Pioche *pioche){
     }
     if(pioche->nbr_cartes <= 0){
         printf("Pioche épuisée !\n");
-        exit(2);  //Pour l'instant, il faudra rediriger vers une défausse
+        return -1;
     }
     pioche->nbr_cartes--;
     return pioche->cartes[pioche->nbr_cartes].valeur; // carte piocher
@@ -267,9 +267,8 @@ void distrib_joueurs(Joueur *j, Pioche *p, int nbr_carte, int nbr_joueur){
     printf("\033[1;32m\u2705 Cartes distribuées avec succès à tous les joueurs.\033[0m\n");
     printf("\033[1;34mAppuyez sur Entrée pour continuer...\033[0m");
     int ch;
-    do {
-        ch = getchar();
-    } while (ch != '\n' && ch != EOF); // Vider le buffer avant d’attendre le vrai appui sur Entrée
+    while ((ch = getchar()) != '\n' && ch != EOF); // Vider le buffer avant d’attendre le vrai appui sur Entrée
+    getchar();
 
     system("clear || cls");
     printf("\033[1;35m╔════════════════════════════════╗\033[0m\n");
